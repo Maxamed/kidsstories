@@ -1,0 +1,54 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environment
+venv/
+.env/
+
+# Environment variables file
+*.env
+*.env.*
+
+# Flask-Specific
+instance/
+*.sqlite3
+*.db
+
+# Logs
+*.log
+*.out
+*.err
+
+# Cache and other temporary files
+*.swp
+*.swo
+*.bak
+*.tmp
+*.old
+*.orig
+.cache/
+*.pytest_cache/
+.coverage
+
+# Static files generated during runtime
+static/
+
+# Testing
+.pytest_cache/
+htmlcov/
+
+# IDE and editor settings
+.idea/
+.vscode/
+*.iml
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# Deployment
+*.bak
+*.old
+*.pid
