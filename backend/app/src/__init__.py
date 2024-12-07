@@ -1,10 +1,11 @@
-from flask import Flask
+from flask import Flask, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_jwt_extended import JWTManager
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 from flask_cors import CORS
 from .config import config_by_name
+
 
 db = SQLAlchemy()
 jwt = JWTManager()
@@ -21,4 +22,12 @@ def create_app(config_name):
     from .routes import api, assets
     app.register_blueprint(api, url_prefix='/api')
     app.register_blueprint(assets, url_prefix='/assets')
+    
+    # Health Check Route
+    @app.route('/health', methods=['GET'])
+    def health_check():
+        return jsonify({"status": "healthy", "message": "Server is running"}), 200
+    
     return app
+
+
