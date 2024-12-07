@@ -1,0 +1,60 @@
+.my-navbar {
+    background-color: #CCF6FF;
+    font-weight: 700;
+    color: #414141;
+}
+
+.active {
+    color: #00a57d !important;
+}
+
+.login-button {
+    box-shadow: 0px 8px 10px 0px rgba(255, 255, 255, 0.25) inset;
+    background: #00a57d;
+    text-align: center;
+    width: 80px;
+    border-radius: 30px;
+    color: #fff !important;
+    margin-left: 5px;
+}
+
+.login-button:hover {
+    background: #19c89e;
+}
+
+.login-button:active {
+    background: #00a57d;
+}
+
+.logged-user {
+    display: inline-block;
+    box-shadow: 0px 8px 10px 0px rgba(255, 255, 255, 0.25) inset;
+    background: #00a57d;
+    text-align: center;
+    border-radius: 30px;
+    color: #fff !important;
+    margin: 0 10px;
+    width: fit-content;
+}
+
+// remove login button margin-left on small screens
+@media screen and (max-width: 992px) {
+    .login-button {
+        margin-left: 0;
+    }
+
+    .logged-user {
+        margin: 0;
+        margin-bottom: 8px;
+    }
+
+    .navbar-collapse {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        background-color: #CCF6FF;
+        z-index: 999;
+        padding: 0px 20px 20px 20px;
+    }
+}

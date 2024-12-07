@@ -1,27 +1,33 @@
 import React from "react";
-import Navbar from "../components/Navbar";
-import "../styles/Page.css";
-import bg from "../assets/bg-2.png";
+import MyNavbar from "../components/MyNavbar";
+import LogoText from "../components/LogoText";
+
+import Container from "react-bootstrap/Container";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
 
 const AboutUs = () => {
     return (
-        <>
-            <Navbar />
-            <img src={bg} alt="background" className="bg-img" />
-            <h1 class="title-page">ABOUT US</h1>
-            <div class="content-card">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras eu magna elementum, bibendum lectus in, commodo velit. Curabitur et porta lectus, maximus ullamcorper sapien. In condimentum leo et sapien interdum, eu porttitor dui bibendum. Curabitur porta quis lacus id condimentum. Nam eu massa eu purus elementum semper id et quam. Donec a viverra nisi, non vulputate nisi. Proin venenatis ac libero ut volutpat.
-                <br /><br />
-                Aliquam iaculis fermentum viverra. Pellentesque pulvinar mauris sed nisl sagittis feugiat. Morbi vel tincidunt est, ut bibendum nulla. Duis sollicitudin ligula non mauris tincidunt, ut aliquam turpis congue. Vestibulum et mauris velit. Sed porta iaculis lacus vitae rutrum. Curabitur libero leo, ornare ut eleifend vitae, bibendum vel dolor. Phasellus consectetur, justo et fermentum aliquam, ex felis maximus nibh, et tempus eros tortor non mi.
-                <br /><br />
-                Ut id massa euismod, aliquam erat non, scelerisque sem. Suspendisse faucibus congue nisi non viverra. Ut aliquet ligula sed tellus gravida lacinia. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur consequat tempus leo sed suscipit. Nunc condimentum at tellus in pharetra. Vestibulum ut urna a odio commodo ornare.
-                <br /><br />
-                Nullam tristique vulputate metus sed egestas. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Phasellus vitae velit at turpis maximus congue. Fusce a lacus convallis, porta quam eget, ornare velit. Integer et augue ante. Sed accumsan mollis risus, condimentum dictum leo tincidunt non. Donec malesuada, dui vel pellentesque congue, elit est porta neque, a volutpat justo lorem commodo turpis. Maecenas malesuada erat accumsan eros efficitur fringilla. Fusce sed congue lacus. Phasellus vitae mattis justo. Pellentesque ornare velit vitae erat accumsan pretium. Nulla non auctor diam, vitae convallis libero. Fusce vehicula, ipsum eu posuere interdum, felis lorem finibus sem, ac luctus massa velit at nulla. Curabitur id sapien placerat tellus condimentum fringilla. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.
-                <br /><br />
-                Nam interdum dolor libero, vitae imperdiet arcu auctor sit amet. Proin tristique bibendum est, quis ultricies mi fermentum eu. Ut malesuada non odio a commodo. Nam lobortis condimentum suscipit. Aenean viverra laoreet quam vel consequat. Vestibulum diam libero, fermentum eget facilisis vitae, accumsan ac tortor. Nam egestas nisl a ante ullamcorper dapibus non porttitor eros. Cras mollis accumsan turpis nec porttitor. Pellentesque quis volutpat ipsum. Duis nec ultricies elit.
-            </div>
-        </>
-    );
-};
+        <Container fluid className="p-0 bg-container bg-2">
+            <MyNavbar />
+            <Container className="text-center mt-5">
+                <h1 className="title-page">ABOUT US</h1>
+                <Row className="justify-content-center">
+                    <Col xs={10} md={8} lg={8}>
+                        <div className="card-container mt-4 mb-5 p-5 text-start">
+                            <LogoText /> is an innovative app designed to ignite children's imaginations through personalized and emotive storytelling. By crafting unique stories tailored to each child's preferences and interests, it transforms every child into an enthusiastic reader, one story at a time.
+                            <br /><br />
+                            Leveraging advanced technology, the platform prioritizes inclusivity, catering to children with diverse needs, including those with neurodivergence. Customizable features ensure the stories adapt to various learning styles and accessibility requirements, making the app suitable for all children.
+                            <br /><br />
+                            Each story is thoughtfully designed to be educational, helping children develop reading skills while fostering a lifelong love for books. Imbued with positive values, these stories inspire and empower young readers with meaningful and engaging narratives.
+                            <br /><br />
+                            <LogoText /> is exceptionally user-friendly, enabling parents and educators to create personalized stories effortlessly with just a few clicks. With this pioneering app, every child can experience the magic of their own unique story, making reading and learning an enjoyable and enriching adventure.
+                        </div>
+                    </Col>
+                </Row>
+            </Container>
+        </Container>
+    )
+}
 
-export default AboutUs;
+export default AboutUs

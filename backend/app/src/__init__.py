@@ -3,6 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_jwt_extended import JWTManager
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
+from flask_cors import CORS
 from .config import config_by_name
 
 db = SQLAlchemy()
@@ -15,6 +16,7 @@ def create_app(config_name):
     db.init_app(app)
     jwt.init_app(app)
     limiter.init_app(app)
+    CORS(app, resources={r"/*": {"origins": "http://localhost:3000"}}, supports_credentials=True)
     from .routes import api, assets
     app.register_blueprint(api, url_prefix='/api')
     app.register_blueprint(assets, url_prefix='/assets')

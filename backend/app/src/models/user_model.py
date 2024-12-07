@@ -11,16 +11,21 @@ class User(db.Model):
     email = db.Column(db.Text, nullable=False, unique=True)
     password_hash = db.Column(db.Text)
     google_id = db.Column(db.Text)
+    account_type = db.Column(db.Text, default="local", nullable=False)
     name = db.Column(db.Text, nullable=False)
     role = db.Column(db.Text, default="user", nullable=False)
     timestamp = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
     story = db.relationship("Story", backref="User", lazy=True)
     feedback = db.relationship("Feedback", backref="User", lazy=True)
 
-    def __init__(self, email, name, password):
+    def __init__(self, email, name, password=None, google_id=None):
         self.email = email
         self.name = name
-        self._set_password(password)
+        if password:
+            self._set_password(password)
+        if google_id:
+            self.google_id = google_id
+            self.account_type = "google"
 
     def check_password(self, password):
         return checkpw(password.encode("utf-8"), self.password_hash.encode("utf-8"))

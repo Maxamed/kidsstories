@@ -1,0 +1,45 @@
+.font-weight-600 {
+    font-weight: 600;
+}
+
+.oauth-icon {
+    width: 20px;
+    height: 20px;
+    margin-right: 10px;
+}
+
+.oauth-button {
+    box-shadow: 0px 6px 4px 0px rgba(188, 185, 185, 0.25) inset;
+    background: #fffeef;
+    border-radius: 30px;
+    color: #414141;
+    font-weight: 700;
+    border: none;
+}
+
+.oauth-button:hover {
+    background-color: #f5fffc;
+    color: #414141;
+}
+
+.oauth-button:active {
+    background-color: #ffffff !important;
+    color: #414141 !important;
+}
+
+.oauth-button:focus {
+    background-color: #ffffff !important;
+    color: #414141 !important;
+}
+
+.auth-call-to {
+    font-size: 1rem;
+    font-weight: 600;
+    text-align: center;
+    width: 320px;
+    margin: 30px 0 10px 0;
+}
+
+.green-text {
+    color: #00a57d;
+}

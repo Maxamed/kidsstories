@@ -20,14 +20,16 @@ def refresh_expiring_jwts(response):
         claims = get_jwt()
         exp_timestamp = claims["exp"]
         now = datetime.utcnow()
-        target_timestamp = datetime.timestamp(now + timedelta(minutes=30))
+        target_timestamp = datetime.timestamp(now + timedelta(hours=2))
         if target_timestamp > exp_timestamp:
-            user_id = claims["user_id"]
+            user_id = claims["sub"]
             name = claims["name"]
+            email = claims["email"]
             role = claims["role"]
+            
             additional_claims = {
-                "user_id": user_id,
                 "name": name,
+                "email": email,
                 "role": role
             }
             access_token = create_access_token(identity=str(user_id), additional_claims=additional_claims)
@@ -36,12 +38,19 @@ def refresh_expiring_jwts(response):
     except (RuntimeError, KeyError):
         return response
 
-@app.errorhandler(429)
-def ratelimit_exceeded(e):
-    return jsonify({
-        "message": "Rate limit exceeded. Please try again later.",
-        "status": "fail"
-    }), 429
+@app.after_request
+def after_request(response):
+    if 'Access-Control-Allow-Origin' not in response.headers:
+        response.headers.add('Access-Control-Allow-Origin', 'http://localhost:3000')
+    if 'Access-Control-Allow-Credentials' not in response.headers:
+        response.headers.add('Access-Control-Allow-Credentials', 'true')
+    if 'Access-Control-Allow-Headers' not in response.headers:
+        response.headers.add('Access-Control-Allow-Headers', 'Content-Type, X-CSRF-TOKEN')
+    if 'Access-Control-Allow-Methods' not in response.headers:
+        response.headers.add('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE')
+
+    print(response.headers)
+    return response
 
 if __name__ == '__main__':
-    app.run()
+    app.run(host="0.0.0.0", port=5000)

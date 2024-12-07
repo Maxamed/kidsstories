@@ -1,0 +1,70 @@
+@use "./styles/navbar";
+@use "./styles/page";
+@use "./styles/auth";
+
+@import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap');
+
+body {
+    font-family: "Nunito", sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #000000;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+.bg-container {
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center top;
+    background-attachment: scroll;
+    min-height: 100vh;
+}
+
+@media (max-width: 768px) {
+    .bg-container {
+        background-size: auto 100%;
+        background-position: center center;
+    }
+}
+
+.bg-1 {
+    background-image: url("/bg-1.png");
+}
+
+.bg-2 {
+    background-image: url("/bg-2.png");
+}
+
+.bg-3 {
+    background-image: url("/bg-3.png");
+}
+
+.bg-4 {
+    background-image: url("/bg-4.png");
+}
+
+.bg-5 {
+    background-image: url("/bg-5.png");
+}
+
+.text-justify {
+    text-align: justify;
+}
+
+.my-shadow-inset {
+    box-shadow: 4px 4px 10px 0px rgba(6, 17, 48, 0.10) inset;
+}
+
+.my-color {
+    color: #00A57D;
+}
+
+.my-bg {
+    background: #00A57D;
+}
+
+$font-family-san-serif: "Nunito Sans", sans-serif;
+$font-family-base: $font-family-san-serif;
