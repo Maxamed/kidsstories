@@ -38,19 +38,19 @@ def refresh_expiring_jwts(response):
     except (RuntimeError, KeyError):
         return response
 
-@app.after_request
-def after_request(response):
-    if 'Access-Control-Allow-Origin' not in response.headers:
-        response.headers.add('Access-Control-Allow-Origin', 'http://localhost:3000')
-    if 'Access-Control-Allow-Credentials' not in response.headers:
-        response.headers.add('Access-Control-Allow-Credentials', 'true')
-    if 'Access-Control-Allow-Headers' not in response.headers:
-        response.headers.add('Access-Control-Allow-Headers', 'Content-Type, X-CSRF-TOKEN')
-    if 'Access-Control-Allow-Methods' not in response.headers:
-        response.headers.add('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE')
+# @app.after_request
+# def after_request(response):
+#     if 'Access-Control-Allow-Origin' not in response.headers:
+#         response.headers.add('Access-Control-Allow-Origin', 'http://localhost:3000')
+#     if 'Access-Control-Allow-Credentials' not in response.headers:
+#         response.headers.add('Access-Control-Allow-Credentials', 'true')
+#     if 'Access-Control-Allow-Headers' not in response.headers:
+#         response.headers.add('Access-Control-Allow-Headers', 'Content-Type, X-CSRF-TOKEN')
+#     if 'Access-Control-Allow-Methods' not in response.headers:
+#         response.headers.add('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE')
 
-    print(response.headers)
-    return response
+#     print(response.headers)
+#     return response
 
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port=5000)

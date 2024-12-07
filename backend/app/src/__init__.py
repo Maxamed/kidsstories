@@ -12,11 +12,12 @@ limiter = Limiter(key_func=get_remote_address)
 
 def create_app(config_name):
     app = Flask(__name__)
+    CORS(app, supports_credentials=True, origins=["http://localhost:3000"])  # Enable CORS with credentials
     app.config.from_object(config_by_name[config_name])
     db.init_app(app)
     jwt.init_app(app)
     limiter.init_app(app)
-    CORS(app, resources={r"/*": {"origins": "http://localhost:3000"}}, supports_credentials=True)
+    # CORS(app, resources={r"/*": {"origins": "http://localhost:3000"}}, supports_credentials=True)
     from .routes import api, assets
     app.register_blueprint(api, url_prefix='/api')
     app.register_blueprint(assets, url_prefix='/assets')
