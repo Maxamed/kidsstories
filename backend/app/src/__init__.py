@@ -13,7 +13,7 @@ limiter = Limiter(key_func=get_remote_address)
 
 def create_app(config_name):
     app = Flask(__name__)
-    CORS(app, supports_credentials=True, origins=["http://174.138.65.30"])  # Enable CORS with credentials
+    CORS(app, supports_credentials=True, origins=["*"])
     app.config.from_object(config_by_name[config_name])
     db.init_app(app)
     jwt.init_app(app)
