@@ -13,32 +13,18 @@ export const useAuth = () => {
     return context;
 };
 
-const getCsrfToken = () => {
-    const csrfToken = document.cookie
-        .split('; ')
-        .find(row => row.startsWith('csrf_access_token='))
-        ?.split('=')[1];
-    return csrfToken;
-};
-
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
-    const [csrfToken, setCsrfToken] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
-
-    useEffect(() => {
-        console.log("CSRF Token:", csrfToken);
-    }, [csrfToken]);
 
     const fetchUser = useCallback(async () => {
         setIsLoading(true);
         try {
             const response = await axios.get(`${API_BASE_URL}/user/profile`, { withCredentials: true });
             setUser(response.data.user_data);
-            setCsrfToken(getCsrfToken());
         }
         catch (err) {
             setUser(null);
@@ -64,7 +50,6 @@ export const AuthProvider = ({ children }) => {
         try {
             const response = await axios.post(`${API_BASE_URL}/user/login`, { email, password }, { withCredentials: true });
             setUser(response.data.user_data);
-            setCsrfToken(getCsrfToken());
         }
         catch (err) {
             console.error("Login failed:", err);
@@ -87,7 +72,6 @@ export const AuthProvider = ({ children }) => {
         try {
             const response = await axios.post(`${API_BASE_URL}/user/google-login`, { google_token: googleToken }, { withCredentials: true });
             setUser(response.data.user_data);
-            setCsrfToken(getCsrfToken());
         }
         catch (err) {
             console.error("Google login failed:", err);
@@ -169,7 +153,6 @@ export const AuthProvider = ({ children }) => {
         user,
         isLoading,
         error,
-        csrfToken,
         login,
         googleLogin,
         googleRegister,

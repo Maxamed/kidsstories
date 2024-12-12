@@ -7,7 +7,6 @@ import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 
-import DownloadIcon from "../assets/download.svg";
 import ShareIcon from "../assets/share.svg";
 import PlayIcon from "../assets/play.svg";
 
@@ -111,36 +110,19 @@ const Story = () => {
                                 <h4 className="my-card-title my-4">{message}</h4>
                             ) : (
                                 <>
-                                    {/* <div className="d-flex justify-content-between align-items-center my-4 flex-wrap">
-                                        <Feedback storyId={id} />
-                                        <ActionButton
-                                            clickHandler={handleDownloadStory}
-                                            buttonText="Download Story PDF"
-                                            icon={DownloadIcon}
-                                        />
-                                        <ActionButton
-                                            clickHandler={handleCopyLink}
-                                            buttonText="Share Story Link"
-                                            icon={ShareIcon}
-                                        />
-                                    </div> */}
-                                    <Row className="my-4 button-bar">
+                                    <Row className="my-4 button-bar align-items-center">
                                         <Col className="d-none d-lg-block" md={1} lg={1}></Col>
                                         <Col xs={6} md={6} lg={4}>
-                                            <div className="green-button py-1 px-2" onClick={handleDownloadStory}>
+                                            <div className="green-button py-1 px-1 px-lg-2" onClick={handleDownloadStory}>
                                                 Download PDF
                                             </div>
                                         </Col>
                                         <Col className="d-none d-lg-block" md={3} lg={3}></Col>
                                         <Col xs={2} md={2} lg={1}>
-                                            <div className="my-bg p-2 rounded-circle">
-                                                <img src={PlayIcon} alt="Play Icon" />
-                                            </div>
+                                            <img src={PlayIcon} alt="Play Icon" />
                                         </Col>
                                         <Col xs={2} md={2} lg={1}>
-                                            <div className="my-bg p-2 rounded-circle" onClick={handleCopyLink}>
-                                                <img src={ShareIcon} alt="Share Icon" />
-                                            </div>
+                                            <img src={ShareIcon} alt="Share Icon" onClick={handleCopyLink} />
                                         </Col>
                                         <Col xs={2} md={2} lg={1}>
                                             <Feedback storyId={id} />

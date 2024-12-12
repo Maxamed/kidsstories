@@ -14,6 +14,7 @@ import Button from "react-bootstrap/Button";
 const Login = () => {
     const { user, login, googleLogin, setAuthError, error, isLoading } = useAuth();
     const [isLogged, setIsLogged] = useState(false);
+    const [successMessage, setSuccessMessage] = useState(null);
     const [formData, setFormData] = useState({
         email: "",
         password: "",
@@ -31,8 +32,11 @@ const Login = () => {
     const handleLogin = async (e) => {
         e.preventDefault();
         if (user) {
-            alert("An account is already logged in!");
-            navigate("/");
+            setAuthError("An account is already logged in! Redirecting...");
+            setTimeout(() => {
+                navigate("/");
+                window.location.reload();
+            }, 5000);
             return;
         }
         setIsLogged(false);
@@ -42,8 +46,11 @@ const Login = () => {
 
     const handleGoogleLogin = async (tokenResponse) => {
         if (user) {
-            alert("An account is already logged in!");
-            navigate("/");
+            setAuthError("An account is already logged in! Redirecting...");
+            setTimeout(() => {
+                navigate("/");
+                window.location.reload();
+            }, 5000);
             return;
         }
         setIsLogged(false);
@@ -59,9 +66,11 @@ const Login = () => {
 
     useEffect(() => {
         if (isLogged && !error) {
-            alert("Login successful!");
-            navigate("/");
-            window.location.reload();
+            setSuccessMessage("Logged in successfully! Redirecting...");
+            setTimeout(() => {
+                navigate("/");
+                window.location.reload();
+            }, 5000);
         }
     }, [isLogged, error]);
 
@@ -77,6 +86,11 @@ const Login = () => {
                                 {error && (
                                     <div className="alert alert-danger" role="alert">
                                         {error}
+                                    </div>
+                                )}
+                                {successMessage && (
+                                    <div className="alert alert-success" role="alert">
+                                        {successMessage}
                                     </div>
                                 )}
                                 <Form.Group controlId="formEmail">

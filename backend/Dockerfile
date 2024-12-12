@@ -11,6 +11,12 @@ RUN apt-get update && apt-get install -y \
     libfontconfig1 \
     libfreetype6 \
     libharfbuzz0b \
+    build-essential \
+    ca-certificates \
+    libasound2-dev \
+    libssl-dev \
+    wget \
+    ffmpeg \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 COPY requirements.txt .

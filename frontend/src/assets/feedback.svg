@@ -1,8 +1,27 @@
-<?xml version="1.0" encoding="utf-8"?><!-- Uploaded to: SVG Repo, www.svgrepo.com, Generator: SVG Repo Mixer Tools -->
-<svg width="800px" height="800px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M8.24999 18L5.24999 20.25V15.75H2.25C1.85217 15.75 1.47064 15.5919 1.18934 15.3106C0.908034 15.0293 0.749999 14.6478 0.749999 14.25V2.25C0.749999 1.85217 0.908034 1.47064 1.18934 1.18934C1.47064 0.908034 1.85217 0.749999 2.25 0.749999H18.75C19.1478 0.749999 19.5293 0.908034 19.8106 1.18934C20.0919 1.47064 20.25 1.85217 20.25 2.25V6.71484" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M5.24999 5.24999H15.75" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M5.24999 9.74999H8.24999" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M23.25 18.75H20.25V23.25L15.75 18.75H11.25V9.74999H23.25V18.75Z" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M19.5 15H15" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #00a57d;
+        stroke-width: 0px;
+      }
+
+      .cls-2 {
+        fill: none;
+        stroke: #fff;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        stroke-width: 24.89px;
+      }
+    </style>
+  </defs>
+  <circle class="cls-1" cx="256" cy="256" r="256"/>
+  <g>
+    <path class="cls-2" d="M209.33,344.67l-37.33,28v-56h-37.33c-4.95,0-9.7-1.97-13.2-5.47-3.5-3.5-5.47-8.25-5.47-13.2v-149.33c0-4.95,1.97-9.7,5.47-13.2,3.5-3.5,8.25-5.47,13.2-5.47h205.33c4.95,0,9.7,1.97,13.2,5.47,3.5,3.5,5.47,8.25,5.47,13.2v55.56"/>
+    <path class="cls-2" d="M172,186h130.67"/>
+    <path class="cls-2" d="M172,242h37.33"/>
+    <path class="cls-2" d="M396,354h-37.33v56l-56-56h-56v-112h149.33v112Z"/>
+    <path class="cls-2" d="M349.33,307.33h-56"/>
+  </g>
 </svg>

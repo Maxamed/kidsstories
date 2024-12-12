@@ -1,4 +1,5 @@
 import os
+import io
 import base64
 import requests
 import traceback
@@ -11,8 +12,12 @@ from flask import request, Response, json, Blueprint, send_file
 from flask_jwt_extended import jwt_required, get_jwt
 from flask_limiter.errors import RateLimitExceeded
 
+from requests_toolbelt import MultipartEncoder
+
 from openai import AzureOpenAI
 from openai import BadRequestError
+import azure.cognitiveservices.speech as speechsdk
+from pydub import AudioSegment
 from weasyprint import HTML
 from io import BytesIO
 
@@ -357,6 +362,77 @@ def download_story_pdf(story_id):
             as_attachment=True,
             download_name=f"{story_id}_story.pdf",
             mimetype="application/pdf"
+        )
+
+    except Exception as e:
+        return Response(response=json.dumps({
+            "message": f"An error occurred: {str(e)}",
+            "status": "fail"
+        }), status=500, mimetype="application/json")
+
+@story.route("/narrate/<story_id>", methods=["GET"])
+@jwt_required()
+def narrate_story(story_id):
+    try:
+        # Fetch the story from the database
+        fetch_story = Story.query.filter_by(id=story_id).first()
+        if not fetch_story:
+            return Response(response=json.dumps({
+                "message": "Story not found",
+                "status": "fail"
+            }), status=404, mimetype="application/json")
+
+        story = {
+            "title": fetch_story.title,
+            "content": fetch_story.content.strip().split("\n")
+        }
+
+        # Configure Azure Speech SDK
+        speech_config = speechsdk.SpeechConfig(
+            subscription=os.getenv("AZURE_SPEECH_API_KEY"), 
+            region=os.getenv("AZURE_SPEECH_API_REGION")
+        )
+        speech_config.speech_synthesis_voice_name = 'en-US-AvaMultilingualNeural'
+        
+        speech_synthesizer = speechsdk.SpeechSynthesizer(speech_config=speech_config, audio_config=None)
+
+        temp_audios = []
+        durations = []
+
+        # Generate speech for each paragraph
+        for para in story["content"]:
+            result = speech_synthesizer.speak_text_async(para).get()
+            if result.reason == speechsdk.ResultReason.SynthesizingAudioCompleted:
+                audio_data = result.audio_data
+                temp_audios.append(audio_data)
+
+                # Get duration of audio
+                audio = AudioSegment.from_file(io.BytesIO(audio_data), format="wav")
+                durations.append(len(audio) / 1000)
+            else:
+                raise Exception(f"Speech synthesis failed for paragraph: {para}")
+
+        # Combine all audio segments into one
+        final_audio = AudioSegment.silent(duration=0)
+        for audio in temp_audios:
+            final_audio += AudioSegment.from_file(io.BytesIO(audio), format="wav")
+
+        # Prepare the audio file for sending
+        audio_io = BytesIO()
+        final_audio.export(audio_io, format="wav")
+        audio_io.seek(0)
+
+        # Construct a multipart response
+        m = MultipartEncoder(
+            fields={
+                'audio': ('audio.wav', audio_io, 'audio/wav'),
+                'durations': json.dumps(durations)
+            }
+        )
+
+        return Response(
+            m.to_string(),
+            mimetype=m.content_type,
         )
 
     except Exception as e:

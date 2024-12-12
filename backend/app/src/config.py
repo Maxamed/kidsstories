@@ -7,6 +7,9 @@ class Config:
     JWT_TOKEN_LOCATION = ["cookies"]
     JWT_ACCESS_TOKEN_EXPIRES = timedelta(hours=2)
     JWT_COOKIE_SECURE = False
+    JWT_CSRF_CHECK_FORM = False
+    JWT_COOKIE_CSRF_PROTECT = False
+    JWT_COOKIE_SAMESITE = "Lax"
 
     SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URI')
     SQLALCHEMY_TRACK_MODIFICATIONS = False

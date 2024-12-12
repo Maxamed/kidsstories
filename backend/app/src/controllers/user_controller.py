@@ -251,12 +251,12 @@ def google_register():
         fetch_user = User.query.filter_by(email=email).first()
         if fetch_user and fetch_user.account_type != "google":
             return Response(response=json.dumps({
-                "message": "User with email {email} already exists with a different login method",
+                "message": f"User with email {email} already exists with a different login method",
                 "status": "fail"
             }), status=400, mimetype="application/json")
         elif fetch_user and fetch_user.account_type == "google":
             return Response(response=json.dumps({
-                "message": "User with email {email} already exists",
+                "message": f"User with email {email} already exists",
                 "status": "fail"
             }), status=400, mimetype="application/json")
 

@@ -6,12 +6,9 @@ import Modal from "react-bootstrap/Modal";
 import { Rating } from 'react-simple-star-rating'
 import FeedbackIcon from "../assets/feedback.svg";
 
-import { useAuth } from "../context/AuthContext";
-
 import axios from "axios";
 
 const Feedback = ({ storyId }) => {
-    const { csrfToken } = useAuth();
     const [rating, setRating] = useState(0);
     const [comment, setComment] = useState("");
     const [modalShow, setModalShow] = useState(false);
@@ -43,10 +40,7 @@ const Feedback = ({ storyId }) => {
         };
         try {
             axios.post(`${API_BASE_URL}/feedback/submit`, feedbackData, {
-                withCredentials: true,
-                headers: {
-                    'X-CSRF-TOKEN': csrfToken,
-                },
+                withCredentials: true
             });
         } catch (error) {
             console.error(error);
@@ -67,9 +61,7 @@ const Feedback = ({ storyId }) => {
 
     return (
         <>
-            <div className="my-bg p-2 rounded-circle" onClick={() => setModalShow(true)}>
-                <img src={FeedbackIcon} alt="Feedback Icon" />
-            </div>
+            <img src={FeedbackIcon} alt="Feedback Icon" onClick={() => setModalShow(true)} />
             <Modal
                 size="lg"
                 aria-labelledby="contained-modal-title-vcenter"

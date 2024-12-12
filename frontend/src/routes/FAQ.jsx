@@ -18,7 +18,7 @@ const FAQ = () => {
                         <div className="card-container mt-4 mb-5 p-5 text-justify">
                             <Accordion defaultActiveKey="0">
                                 <Accordion.Item eventKey="0" className="mb-4 border border-white rounded shadow">
-                                    <Accordion.Header>What type of personalized stories can I make with&nbsp;<LogoText />&nbsp;?</Accordion.Header>
+                                    <Accordion.Header><div>What type of personalized stories can I make with&nbsp;<LogoText />&nbsp;?</div></Accordion.Header>
                                     <Accordion.Body>
                                         Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
                                         eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
@@ -30,7 +30,7 @@ const FAQ = () => {
                                     </Accordion.Body>
                                 </Accordion.Item>
                                 <Accordion.Item eventKey="1" className="mb-4 border border-white rounded shadow">
-                                    <Accordion.Header>How does develop&nbsp;<LogoText />&nbsp;my child's reading skills?</Accordion.Header>
+                                    <Accordion.Header><div>How does develop&nbsp;<LogoText />&nbsp;my child's reading skills?</div></Accordion.Header>
                                     <Accordion.Body>
                                         Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
                                         eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
@@ -42,7 +42,7 @@ const FAQ = () => {
                                     </Accordion.Body>
                                 </Accordion.Item>
                                 <Accordion.Item eventKey="2" className="mb-4 border border-white rounded shadow">
-                                    <Accordion.Header>Can&nbsp;<LogoText />&nbsp;be used for educational purposes?</Accordion.Header>
+                                    <Accordion.Header><div>Can&nbsp;<LogoText />&nbsp;be used for educational purposes?</div></Accordion.Header>
                                     <Accordion.Body>
                                         Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
                                         eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
@@ -54,7 +54,7 @@ const FAQ = () => {
                                     </Accordion.Body>
                                 </Accordion.Item>
                                 <Accordion.Item eventKey="3" className="mb-4 border border-white rounded shadow">
-                                    <Accordion.Header>Is&nbsp;<LogoText />&nbsp;safe for children?</Accordion.Header>
+                                    <Accordion.Header><div>Is&nbsp;<LogoText />&nbsp;safe for children?</div></Accordion.Header>
                                     <Accordion.Body>
                                         Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
                                         eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
@@ -66,7 +66,7 @@ const FAQ = () => {
                                     </Accordion.Body>
                                 </Accordion.Item>
                                 <Accordion.Item eventKey="4" className="mb-4 border border-white rounded shadow">
-                                    <Accordion.Header>What type of personalized stories can I make with&nbsp;<LogoText />&nbsp;?</Accordion.Header>
+                                    <Accordion.Header><div>What type of personalized stories can I make with&nbsp;<LogoText />&nbsp;?</div></Accordion.Header>
                                     <Accordion.Body>
                                         Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
                                         eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
@@ -78,7 +78,7 @@ const FAQ = () => {
                                     </Accordion.Body>
                                 </Accordion.Item>
                                 <Accordion.Item eventKey="5" className="mb-4 border border-white rounded shadow">
-                                    <Accordion.Header>How does develop&nbsp;<LogoText />&nbsp;my child's reading skills?</Accordion.Header>
+                                    <Accordion.Header><div>How does develop&nbsp;<LogoText />&nbsp;my child's reading skills?</div></Accordion.Header>
                                     <Accordion.Body>
                                         Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
                                         eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
@@ -90,7 +90,7 @@ const FAQ = () => {
                                     </Accordion.Body>
                                 </Accordion.Item>
                                 <Accordion.Item eventKey="6" className="border border-white rounded shadow">
-                                    <Accordion.Header>Can&nbsp;<LogoText />&nbsp;be used for educational purposes?</Accordion.Header>
+                                    <Accordion.Header><div>Can&nbsp;<LogoText />&nbsp;be used for educational purposes?</div></Accordion.Header>
                                     <Accordion.Body>
                                         Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
                                         eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad

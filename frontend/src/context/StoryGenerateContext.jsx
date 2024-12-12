@@ -35,7 +35,7 @@ export const StoryGenerateProvider = ({ children }) => {
         }));
     };
 
-    const generateStory = async (user, csrfToken) => {
+    const generateStory = async (user) => {
         const endpoint = user
             ? `${API_BASE_URL}/story/generate`
             : `${API_BASE_URL}/story/generate-partial`;
@@ -50,10 +50,7 @@ export const StoryGenerateProvider = ({ children }) => {
         }
         try {
             const response = await axios.post(endpoint, storyGenerateData, {
-                withCredentials: true,
-                headers: {
-                    'X-CSRF-TOKEN': csrfToken,
-                },
+                withCredentials: true
             });
             const storyObj = {
                 title: response.data.story.title,
@@ -72,15 +69,6 @@ export const StoryGenerateProvider = ({ children }) => {
         }
         finally {
             setIsGenerating(false);
-            if (!error) {
-                setStoryGenerateData({
-                    child_name: "",
-                    child_age: "",
-                    story_moral: "",
-                    story_genre: "",
-                    story_length: "short",
-                });
-            }
         }
     };
 

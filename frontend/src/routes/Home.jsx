@@ -13,7 +13,7 @@ import Button from "react-bootstrap/Button";
 import Spinner from 'react-bootstrap/Spinner';
 
 const Home = () => {
-    const { user, csrfToken } = useAuth();
+    const { user } = useAuth();
     const { isGenerating, error, storyGenerateData, handleStoryGenerateDataChange, generateStory } = useStoryGenerate();
     const [isGenerated, setIsGenerated] = useState(false);
     const navigate = useNavigate();
@@ -21,9 +21,42 @@ const Home = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setIsGenerated(false);
-        await generateStory(user, csrfToken);
+        await generateStory(user);
         setIsGenerated(true);
     };
+
+    useEffect(() => {
+        handleStoryGenerateDataChange({
+            target: {
+                name: "story_length",
+                value: "short",
+            },
+        });
+        handleStoryGenerateDataChange({
+            target: {
+                name: "story_genre",
+                value: "",
+            },
+        });
+        handleStoryGenerateDataChange({
+            target: {
+                name: "story_moral",
+                value: "",
+            },
+        });
+        handleStoryGenerateDataChange({
+            target: {
+                name: "child_age",
+                value: "",
+            },
+        });
+        handleStoryGenerateDataChange({
+            target: {
+                name: "child_name",
+                value: "",
+            },
+        });
+    }, []);
 
     useEffect(() => {
         if (isGenerated && !isGenerating && !error) {

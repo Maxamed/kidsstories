@@ -18,9 +18,10 @@ class User(db.Model):
     story = db.relationship("Story", backref="User", lazy=True)
     feedback = db.relationship("Feedback", backref="User", lazy=True)
 
-    def __init__(self, email, name, password=None, google_id=None):
+    def __init__(self, email, name, password=None, google_id=None, role="user"):
         self.email = email
         self.name = name
+        self.role = role
         if password:
             self._set_password(password)
         if google_id:
