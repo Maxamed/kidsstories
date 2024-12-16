@@ -33,11 +33,17 @@ const GeneratePreview = () => {
                             <div className={`story-preview-content mt-5 mb-4 p-4 ${storyResponse?.type === "partial" ? "hide-story" : ""}`}>
                                 <h4 id="story-title" className="my-card-title my-3">{storyResponse?.title}</h4>
                                 {storyResponse?.paragraphs.map((para, index) => (
-                                    <p key={index} className="story-preview-content-text">{para}</p>
+                                    <React.Fragment key={index}>
+                                        {index === Math.floor(storyResponse.paragraphs.length / 3) && storyResponse?.type === "full" && (
+                                            <img
+                                                src={storyResponse?.imageURL}
+                                                alt="Story Image"
+                                                className="float-lg-end story-preview-image my-2 ms-lg-5"
+                                            />
+                                        )}
+                                        <p className="story-preview-content-text">{para}</p>
+                                    </React.Fragment>
                                 ))}
-                                {storyResponse?.type === "full" && (
-                                    <img src={storyResponse?.imageURL} alt="Story Image" className="story-preview-image" />
-                                )}
                             </div>
                             {storyResponse?.type === "partial" && (<>
                                 <h4 className="my-card-title my-4">Register for free to generate the full story!</h4>

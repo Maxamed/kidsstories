@@ -1,0 +1,24 @@
+.play-pause-button {
+    all: unset;
+    height: 30px;
+    width: 30px;
+    border-radius: 100%;
+    background-color: #00A57D;
+    padding: 7px;
+    box-sizing: border-box;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.play-pause-button img {
+    height: 100%;
+    width: 100%;
+}
+
+.progress-bar-container {
+    width: 100%;
+    position: relative;
+    cursor: pointer;
+}

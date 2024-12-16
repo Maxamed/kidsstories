@@ -1,6 +1,7 @@
 @use "./styles/navbar";
 @use "./styles/page";
 @use "./styles/auth";
+@use "./styles/audio_player";
 
 @import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap');
 
@@ -69,6 +70,13 @@ body {
 // .accordion-button {
 //     display: block !important;
 // }
+
+.rhap_container {
+    padding: 0 !important;
+    margin: 0 !important;
+    margin-bottom: 10px !important;
+    box-shadow: none !important;
+}
 
 $font-family-san-serif: "Nunito Sans", sans-serif;
 $font-family-base: $font-family-san-serif;

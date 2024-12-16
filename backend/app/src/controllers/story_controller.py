@@ -371,10 +371,8 @@ def download_story_pdf(story_id):
         }), status=500, mimetype="application/json")
 
 @story.route("/narrate/<story_id>", methods=["GET"])
-@jwt_required()
 def narrate_story(story_id):
     try:
-        # Fetch the story from the database
         fetch_story = Story.query.filter_by(id=story_id).first()
         if not fetch_story:
             return Response(response=json.dumps({
@@ -387,7 +385,6 @@ def narrate_story(story_id):
             "content": fetch_story.content.strip().split("\n")
         }
 
-        # Configure Azure Speech SDK
         speech_config = speechsdk.SpeechConfig(
             subscription=os.getenv("AZURE_SPEECH_API_KEY"), 
             region=os.getenv("AZURE_SPEECH_API_REGION")
@@ -399,40 +396,42 @@ def narrate_story(story_id):
         temp_audios = []
         durations = []
 
-        # Generate speech for each paragraph
         for para in story["content"]:
             result = speech_synthesizer.speak_text_async(para).get()
             if result.reason == speechsdk.ResultReason.SynthesizingAudioCompleted:
                 audio_data = result.audio_data
                 temp_audios.append(audio_data)
 
-                # Get duration of audio
                 audio = AudioSegment.from_file(io.BytesIO(audio_data), format="wav")
                 durations.append(len(audio) / 1000)
             else:
                 raise Exception(f"Speech synthesis failed for paragraph: {para}")
 
-        # Combine all audio segments into one
         final_audio = AudioSegment.silent(duration=0)
         for audio in temp_audios:
             final_audio += AudioSegment.from_file(io.BytesIO(audio), format="wav")
 
-        # Prepare the audio file for sending
         audio_io = BytesIO()
         final_audio.export(audio_io, format="wav")
         audio_io.seek(0)
 
-        # Construct a multipart response
+        json_data = {
+            "status": "success",
+            "message": "Story narrated successfully",
+            "durations": durations
+        }
+
         m = MultipartEncoder(
             fields={
                 'audio': ('audio.wav', audio_io, 'audio/wav'),
-                'durations': json.dumps(durations)
+                'durations': (None, json.dumps(json_data), 'application/json')
             }
         )
 
         return Response(
-            m.to_string(),
-            mimetype=m.content_type,
+            response=m.to_string(),
+            status=200,
+            mimetype=m.content_type
         )
 
     except Exception as e:
