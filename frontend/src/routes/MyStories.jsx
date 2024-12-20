@@ -54,7 +54,7 @@ const MyStories = () => {
         <Container fluid className="p-0 bg-container bg-3">
             <MyNavbar />
             <Container className="text-center mt-5 pb-5">
-                <h1 className="title-page">MY STORIES</h1>
+                <h1 className="text-blue-900 fw-900">MY STORIES</h1>
                 <Row className="justify-content-center">
                     <Col xs={12} md={12} lg={12}>
                         <div className="card-container mt-4 p-4">
@@ -64,7 +64,7 @@ const MyStories = () => {
                                     {storyList.map((story, index) => (
                                         <Col key={index} xs={12} md={6} lg={4} className="d-flex justify-content-center">
                                             <Link to={`/story/${story.id}`} className="no-link-style">
-                                                <div className="story-preview-content p-3">
+                                                <div className="story-preview-content p-3 h-100 d-flex flex-column justify-content-center align-items-center">
                                                     <img
                                                         src={`${ASSETS_BASE_URL}/images/${story.image}`}
                                                         alt={story.title}

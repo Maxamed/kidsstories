@@ -11,18 +11,15 @@ os.makedirs(IMAGE_FOLDER, exist_ok=True)
 image = Blueprint("image", __name__)
 
 @image.route("/<image_name>", methods=["GET"])
-@jwt_required()
 def get_image(image_name):
     try:
         image_path = os.path.join(IMAGE_FOLDER, image_name)
-        user_id_from_token = get_jwt_identity()
-        user_id_from_image = image_name.split("_")[0]
-        if user_id_from_token != user_id_from_image or not user_id_from_token or not os.path.exists(image_path):
+        if not os.path.exists(image_path):
             return Response(response=json.dumps({
-                "message": "Image not found or unauthorized",
+                "message": "Image not found",
                 "status": "fail"
             }), status=404, mimetype="application/json")
-        return send_file(image_path, mimetype="image/jpeg")
+        return send_file(image_path, mimetype="image/png")
     except Exception as e:
         return Response(response=json.dumps({
             "message": str(e),

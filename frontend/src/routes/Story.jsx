@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import MyNavbar from "../components/MyNavbar";
 import Feedback from "../components/Feedback";
+import Share from "../components/Share";
 import AudioPlayer from "../components/AudioPlayer";
 import { useParams } from "react-router-dom";
 
@@ -8,7 +9,6 @@ import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 
-import ShareIcon from "../assets/share.svg";
 import PlayIcon from "../assets/play.svg";
 
 import axios from "axios";
@@ -16,7 +16,6 @@ import axios from "axios";
 const Story = () => {
     const [storyData, setStoryData] = useState({});
     const [message, setMessage] = useState("Loading story...");
-    const [copyMessage, setCopyMessage] = useState("");
     const [downloadMessage, setDownloadMessage] = useState("");
     const [narrateMessage, setNarrateMessage] = useState("");
     const [narrationAudio, setNarrationAudio] = useState(null);
@@ -54,8 +53,8 @@ const Story = () => {
     };
 
     const handleDownloadStory = async () => {
-        setDownloadMessage("Downloading Story...");
         try {
+            setDownloadMessage("Downloading Story...");
             const response = await axios.get(`${API_BASE_URL}/story/download/${id}`, {
                 withCredentials: true,
                 responseType: "blob"
@@ -70,6 +69,7 @@ const Story = () => {
             document.body.removeChild(tempLink);
             tempLink.remove();
             window.URL.revokeObjectURL(url);
+            setDownloadMessage("");
         } catch (error) {
             console.error(error);
             setDownloadMessage("Failed to download story!");
@@ -79,32 +79,18 @@ const Story = () => {
     const handleNarrateStory = async () => {
         setNarrateMessage("Loading Narration...");
         try {
-            const response = await axios.get(`${API_BASE_URL}/story/narrate/${id}`, {
-                withCredentials: true,
-                responseType: "arraybuffer",
-            });
+            const response = await axios.post(`${API_BASE_URL}/story/narrate/${id}`, { withCredentials: true });
+            const narrationData = response.data;
+            let audioURL = `${ASSETS_BASE_URL}/audios/${narrationData.audio}`;
+            const audioBlob = await fetch(audioURL).then(res => res.blob());
+            audioURL = URL.createObjectURL(audioBlob);
 
-            const contentType = response.headers["content-type"];
-            const boundary = contentType.match(/boundary=(.+)/)[1];
-
-            const data = new Uint8Array(response.data);
-            const decoder = new TextDecoder("utf-8");
-            const decodedData = decoder.decode(data);
-            const parts = decodedData.split(`--${boundary}`);
-
-            const jsonPart = parts.find(part => part.includes("application/json"));
-            const jsonContent = jsonPart.split("\r\n\r\n")[1].trim();
-            const durationsData = JSON.parse(jsonContent)["durations"];
+            const durationsData = narrationData.durations;
             cumulativeDurationsRef.current = durationsData.reduce((acc, val, i) => {
                 acc.push((acc[i - 1] || 0) + val);
                 return acc;
             }, []);
 
-            const audioPart = parts.find(part => part.includes("audio/wav"));
-            const audioIndex = decodedData.indexOf(audioPart) + audioPart.indexOf("\r\n\r\n") + 4;
-            const audioBlob = new Blob([data.subarray(audioIndex)], { type: "audio/wav" });
-
-            const audioURL = URL.createObjectURL(audioBlob);
             setNarrationAudio(audioURL);
             setNarrateMessage("");
         } catch (error) {
@@ -123,15 +109,17 @@ const Story = () => {
         return cumulativeDurations.length - 1;
     };
 
-    const handleCopyLink = () => {
-        const link = `${window.location.origin}/story/${id}`;
-        navigator.clipboard.writeText(link);
-        setCopyMessage("Link Copied to Clipboard!");
-    }
-
     useEffect(() => {
         fetchStory();
     }, []);
+
+    useEffect(() => {
+        if (downloadMessage == "Failed to download story!") {
+            setTimeout(() => {
+                setDownloadMessage("");
+            }, 3000);
+        }
+    }, [downloadMessage]);
 
     useEffect(() => {
         if (isNarrationPlaying) {
@@ -142,30 +130,11 @@ const Story = () => {
         }
     }, [isNarrationPlaying, narrationCurrentTime]);
 
-
-    useEffect(() => {
-        if (copyMessage) {
-            const timeout = setTimeout(() => {
-                setCopyMessage("");
-            }, 3000);
-            return () => clearTimeout(timeout);
-        }
-    }, [copyMessage]);
-
-    useEffect(() => {
-        if (downloadMessage) {
-            const timeout = setTimeout(() => {
-                setDownloadMessage("");
-            }, 3000);
-            return () => clearTimeout(timeout);
-        }
-    }, [downloadMessage]);
-
     return (
         <Container fluid className="p-0 bg-container bg-3">
             <MyNavbar />
             <Container className="text-center mt-5 pb-5">
-                <h1 className="title-page">STORY</h1>
+                <h1 className="text-blue-900 fw-900">STORY</h1>
                 <Row className="justify-content-center">
                     <Col xs={12} md={8} lg={8}>
                         <div className="card-container mt-4 p-sm-5 p-4 py-5">
@@ -179,7 +148,7 @@ const Story = () => {
                                         <Col className="d-none d-lg-block" md={1} lg={1}></Col>
                                         <Col xs={6} md={6} lg={4}>
                                             <div className="green-button py-1 px-1 px-lg-2" onClick={handleDownloadStory}>
-                                                Download PDF
+                                                {downloadMessage ? downloadMessage : "Download Story"}
                                             </div>
                                         </Col>
                                         <Col className="d-none d-lg-block" md={3} lg={3}></Col>
@@ -187,7 +156,7 @@ const Story = () => {
                                             <img src={PlayIcon} alt="Play Icon" onClick={handleNarrateStory} />
                                         </Col>
                                         <Col xs={2} md={2} lg={1}>
-                                            <img src={ShareIcon} alt="Share Icon" onClick={handleCopyLink} />
+                                            <Share storyId={id} />
                                         </Col>
                                         <Col xs={2} md={2} lg={1}>
                                             <Feedback storyId={id} />

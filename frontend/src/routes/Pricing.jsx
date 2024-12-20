@@ -11,7 +11,7 @@ const Pricing = () => {
         <Container fluid className="p-0 bg-container bg-5">
             <MyNavbar />
             <Container className="text-center mt-5">
-                <h1 className="title-page mb-5">Pricing</h1>
+                <h1 className="text-blue-900 fw-900 mb-5">Pricing</h1>
                 <Row className="justify-content-center">
                     <Col xs={10} md={6} lg={3}>
                         <div className="bg-white rounded-4 my-shadow-inset my-3 p-4 d-flex flex-column align-items-center">

@@ -12,8 +12,6 @@ from flask import request, Response, json, Blueprint, send_file
 from flask_jwt_extended import jwt_required, get_jwt
 from flask_limiter.errors import RateLimitExceeded
 
-from requests_toolbelt import MultipartEncoder
-
 from openai import AzureOpenAI
 from openai import BadRequestError
 import azure.cognitiveservices.speech as speechsdk
@@ -23,9 +21,7 @@ from io import BytesIO
 
 story = Blueprint("story", __name__)
 IMAGE_SAVE_PATH = os.path.join(os.getcwd(), "assets", "images")
-
-def story_image_filename(user_id, title):
-    return f"{user_id}_{title.lower().replace(' ', '_')}.png"
+AUDIO_SAVE_PATH = os.path.join(os.getcwd(), "assets", "audios")
 
 def rate_limit_exceeded_handler(e: RateLimitExceeded):
     response = {
@@ -167,8 +163,7 @@ def generate():
         db.session.add(new_story)
         db.session.commit()
 
-        # image_filename = f"{new_story.user_id}_{new_story.title.lower().replace(' ', '_')}.png"
-        image_filename = story_image_filename(new_story.user_id, new_story.title)
+        image_filename = f"{new_story.id}.png"
         image_path = os.path.join(IMAGE_SAVE_PATH, image_filename)
         with open(image_path, "wb") as f:
             f.write(image)
@@ -188,7 +183,7 @@ def generate():
     except IndexError:
         print(chat_response)
         return Response(response=json.dumps({
-            "message": "Error in AI's story response.",
+            "message": "Unexpected response from AI, please try again. Try changing the parameters.",
             "status": "fail"
         }), status=500, mimetype="application/json")
 
@@ -212,9 +207,10 @@ def generate():
 def get_story(story_id):
     try:
         story = Story.query.filter_by(id=story_id).first()
-        if not story:
+        user_id = get_jwt().get("sub")
+        if not story or str(story.user_id) != user_id:
             return Response(response=json.dumps({
-                "message": "Story not found",
+                "message": "Story not found or unauthorized",
                 "status": "fail"
             }), status=404, mimetype="application/json")
 
@@ -224,8 +220,61 @@ def get_story(story_id):
             "story": {
                 "title": story.title,
                 "content": story.content,
-                "image": story_image_filename(story.user_id, story.title),
+                "image": f"{story.id}.png",
                 "timestamp": story.timestamp
+            }
+        }), status=200, mimetype="application/json")
+
+    except Exception as e:
+        return Response(response=json.dumps({
+            "message": f"An error occurred: {str(e)}",
+            "status": "fail"
+        }), status=500, mimetype="application/json")
+
+@story.route("/publish/<story_id>", methods=["POST"])
+@jwt_required()
+def publish_story(story_id):
+    try:
+        story = Story.query.filter_by(id=story_id).first()
+        user_id = get_jwt().get("sub")
+        if not story or str(story.user_id) != user_id:
+            return Response(response=json.dumps({
+                "message": "Story not found or unauthorized",
+                "status": "fail"
+            }), status=404, mimetype="application/json")
+
+        if not story.isPublished:
+            story.isPublished = True
+            db.session.commit()
+
+        return Response(response=json.dumps({
+            "status": "success",
+            "message": "Story published successfully",
+        }), status=200, mimetype="application/json")
+
+    except Exception as e:
+        return Response(response=json.dumps({
+            "message": f"An error occurred: {str(e)}",
+            "status": "fail"
+        }), status=500, mimetype="application/json")
+
+@story.route("/shared/<story_id>", methods=["GET"])
+def get_shared_story(story_id):
+    try:
+        story = Story.query.filter_by(id=story_id).first()
+        if not story or story.isPublished == False:
+            return Response(response=json.dumps({
+                "message": "Story not found or not shared publicly",
+                "status": "fail"
+            }), status=404, mimetype="application/json")
+
+        return Response(response=json.dumps({
+            "status": "success",
+            "message": "Story retrieved successfully",
+            "story": {
+                "title": story.title,
+                "content": story.content,
+                "image": f"{story.id}.png"
             }
         }), status=200, mimetype="application/json")
 
@@ -250,7 +299,7 @@ def my_stories():
                 "id": story.id,
                 "title": story.title,
                 "content": story.content[:100] + "...",
-                "image": story_image_filename(story.user_id, story.title),
+                "image": f"{story.id}.png",
                 "timestamp": story.timestamp
             })
 
@@ -274,7 +323,6 @@ def get_image_as_base64(image_path):
         return None
 
 @story.route("/download/<story_id>", methods=["GET"])
-@jwt_required()
 def download_story_pdf(story_id):
     try:
         story_record = Story.query.filter_by(id=story_id).first()
@@ -284,22 +332,17 @@ def download_story_pdf(story_id):
                 "status": "fail"
             }), status=404, mimetype="application/json")
 
-        # Prepare story data
         story = {
             "title": story_record.title,
             "content": story_record.content,
         }
-        image_filename = story_image_filename(story_record.user_id, story_record.title)
+
+        image_filename = f"{story_record.id}.png"
         image_path = os.path.join(IMAGE_SAVE_PATH, image_filename)
-        
         logo_path = os.path.join(os.getcwd(), "app", "src", "brand-logo.png")
         logo_base64 = get_image_as_base64(logo_path)
-        logo_html = f'<img src="data:image/png;base64,{logo_base64}" alt="Brand Logo" style="width: 300px; margin: 0 auto; display: block;">' if logo_base64 else ""
-
         image_base64 = get_image_as_base64(image_path)
-        image_html = f'<img src="data:image/jpeg;base64,{image_base64}" alt="Story Image" style="max-width: 80%; height: auto; border: 1px solid #ccc; border-radius: 8px;">' if image_base64 else "<p>Image not available</p>"
 
-        # HTML Template for the PDF
         html_template = f"""
         <!DOCTYPE html>
         <html lang="en">
@@ -307,52 +350,52 @@ def download_story_pdf(story_id):
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <style>
+                @font-face {{
+                    font-family: 'Nunito Sans';
+                    src: url(file://../NunitoSans.ttf);
+                }}
                 body {{
-                    font-family: 'Georgia', serif;
-                    margin: 40px;
+                    font-family: 'Nunito Sans', sans-serif;
+                    margin: 20px;
                     line-height: 1.8;
                     color: #333;
                 }}
+                .logo-image {{
+                    width: 50%;
+                    display: block;
+                    margin: 0 auto;
+                }}
+                .story-image {{
+                    width: 60%;
+                    display: block;
+                    margin: 20px auto;
+                    border-radius: 10px;
+                }}
                 h1 {{
                     text-align: center;
-                    color: #2c3e50;
-                    font-size: 2.5em;
-                    margin-bottom: 20px;
+                    color: rgb(65, 65, 65);
+                    font-size: 1.5em;
+                    margin-bottom: 10px;
+                    font-weight: 700;
                 }}
                 .content {{
                     margin-top: 30px;
                     font-size: 1.1em;
                     text-align: justify;
                 }}
-                .image-container {{
-                    text-align: center;
-                    margin-top: 30px;
-                }}
-                .cover-page {{
-                    text-align: center;
-                    margin: 50px 0;
-                }}
             </style>
         </head>
         <body>
-            <div class="cover-page">
-                {logo_html}
-                <h1>{story["title"]}</h1>
-                <div class="image-container">
-                    {image_html}
-                </div>
-            </div>
+            <img src="data:image/png;base64,{logo_base64}" alt="Brand Logo" class="logo-image" >'
+            <h1>{story["title"]}</h1>
+            <img src="data:image/jpeg;base64,{image_base64}" alt="Story Image" class="story-image" >
             <div class="content">
                 {"<p>" + "</p><p>".join(story["content"].split("\n")) + "</p>"}
             </div>
-            <footer>
-                <p>Generated by Story Application</p>
-            </footer>
         </body>
         </html>
         """
 
-        # Generate PDF
         pdf_io = BytesIO()
         HTML(string=html_template).write_pdf(pdf_io)
         pdf_io.seek(0)
@@ -360,7 +403,7 @@ def download_story_pdf(story_id):
         return send_file(
             pdf_io,
             as_attachment=True,
-            download_name=f"{story_id}_story.pdf",
+            download_name=f"story_{story_id}.pdf",
             mimetype="application/pdf"
         )
 
@@ -370,7 +413,7 @@ def download_story_pdf(story_id):
             "status": "fail"
         }), status=500, mimetype="application/json")
 
-@story.route("/narrate/<story_id>", methods=["GET"])
+@story.route("/narrate/<story_id>", methods=["POST"])
 def narrate_story(story_id):
     try:
         fetch_story = Story.query.filter_by(id=story_id).first()
@@ -379,6 +422,14 @@ def narrate_story(story_id):
                 "message": "Story not found",
                 "status": "fail"
             }), status=404, mimetype="application/json")
+
+        if fetch_story.narrationData:
+            return Response(response=json.dumps({
+                "status": "success",
+                "message": "Story already narrated",
+                "audio": fetch_story.narrationData["audio"],
+                "durations": fetch_story.narrationData["durations"]
+            }), status=200, mimetype="application/json")
 
         story = {
             "title": fetch_story.title,
@@ -415,24 +466,28 @@ def narrate_story(story_id):
         final_audio.export(audio_io, format="wav")
         audio_io.seek(0)
 
-        json_data = {
-            "status": "success",
-            "message": "Story narrated successfully",
+        audio_filename = f"{story_id}.wav"
+        audio_path = os.path.join(AUDIO_SAVE_PATH, audio_filename)
+
+        print(audio_path)
+
+        with open(audio_path, "wb") as f:
+            f.write(audio_io.getvalue())
+
+        narration_data = {
+            "audio": audio_filename,
             "durations": durations
         }
 
-        m = MultipartEncoder(
-            fields={
-                'audio': ('audio.wav', audio_io, 'audio/wav'),
-                'durations': (None, json.dumps(json_data), 'application/json')
-            }
-        )
+        fetch_story.narrationData = narration_data
+        db.session.commit()
 
-        return Response(
-            response=m.to_string(),
-            status=200,
-            mimetype=m.content_type
-        )
+        return Response(response=json.dumps({
+            "status": "success",
+            "message": "Story narrated successfully",
+            "audio": audio_filename,
+            "durations": durations
+        }), status=201, mimetype="application/json")
 
     except Exception as e:
         return Response(response=json.dumps({

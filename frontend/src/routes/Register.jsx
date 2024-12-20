@@ -38,7 +38,7 @@ const Register = () => {
             setTimeout(() => {
                 navigate("/");
                 window.location.reload();
-            }, 5000);
+            }, 1000);
             return;
         }
         setIsRegistered(false);
@@ -52,7 +52,7 @@ const Register = () => {
             setTimeout(() => {
                 navigate("/");
                 window.location.reload();
-            }, 5000);
+            }, 1000);
             return;
         }
         setIsRegistered(false);
@@ -71,7 +71,7 @@ const Register = () => {
             setTimeout(() => {
                 navigate("/login");
                 window.location.reload();
-            }, 5000);
+            }, 1000);
         }
     }, [isRegistered, error]);
 
@@ -79,7 +79,7 @@ const Register = () => {
         <Container fluid className="p-0 bg-container bg-1">
             <MyNavbar />
             <Container className="text-center mt-5 pb-5">
-                <h1 className="title-page">REGISTER</h1>
+                <h1 className="text-blue-900 fw-900">REGISTER</h1>
                 <Row className="justify-content-center mt-4">
                     <Col xs={11} md={8} lg={4}>
                         <div className="my-card p-4">

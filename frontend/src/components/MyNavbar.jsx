@@ -14,16 +14,25 @@ import logo from "../assets/logo.svg";
 const MyNavbar = () => {
     const { user, logout } = useAuth();
     const navigate = useNavigate();
+
     const logoutHandler = async () => {
         await logout();
         navigate("/");
         window.location.reload();
     };
 
+    const profileHandler = () => {
+        if (user.role === "admin") {
+            navigate("/admin");
+        } else {
+            navigate("/profile");
+        }
+    };
+
     return (
-        <Navbar expand="lg" className="my-navbar">
+        <Navbar expand="lg" className="my-bg-2 fw-bold my-color-2">
             <Container>
-                <Navbar.Brand className="d-flex align-items-center justify-content-between">
+                <Navbar.Brand className="d-flex align-items-center justify-content-between" as={NavLink} to="/">
                     <img src={logo} alt="logo" height="40px" />
                     <LogoText classNames="ms-2 fs-4" />
                 </Navbar.Brand>
@@ -41,7 +50,7 @@ const MyNavbar = () => {
                         )}
                         {user ? (
                             <>
-                                <Nav.Link className="logged-user">&nbsp;&nbsp;{user.name}&nbsp;&nbsp;</Nav.Link>
+                                <Nav.Link className="logged-user" onClick={profileHandler}>&nbsp;&nbsp;{user.name}&nbsp;&nbsp;</Nav.Link>
                                 <Nav.Link className="login-button" onClick={logoutHandler}>Logout</Nav.Link>
                             </>
                         ) : (

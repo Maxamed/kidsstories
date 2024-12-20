@@ -68,7 +68,7 @@ const Home = () => {
         <Container fluid className="p-0 bg-container bg-2">
             <MyNavbar />
             <Container className="text-center mt-5">
-                <h1 className="title-page">GENERATE STORY</h1>
+                <h1 className="text-blue-900 fw-900">GENERATE STORY</h1>
                 <Row className="justify-content-center">
                     <Col xs={11} md={8} lg={4}>
                         <div className="my-card p-5 mt-4">

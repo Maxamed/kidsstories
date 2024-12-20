@@ -22,7 +22,7 @@ const GeneratePreview = () => {
         <Container fluid className="p-0 bg-container bg-2">
             <MyNavbar />
             <Container className="text-center mt-5 pb-5">
-                <h1 className="title-page">{storyResponse?.type === "partial" ? "TRIAL STORY PREVIEW" : "FULL STORY PREVIEW"}</h1>
+                <h1 className="text-blue-900 fw-900">{storyResponse?.type === "partial" ? "TRIAL STORY PREVIEW" : "FULL STORY PREVIEW"}</h1>
                 <Row className="justify-content-center">
                     <Col xs={12} md={8} lg={8}>
                         <div className="card-container mt-4 p-5">

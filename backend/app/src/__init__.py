@@ -1,4 +1,4 @@
-from flask import Flask, jsonify
+from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_jwt_extended import JWTManager
 from flask_limiter import Limiter
@@ -15,12 +15,11 @@ limiter = Limiter(
 
 def create_app(config_name):
     app = Flask(__name__)
-    CORS(app, supports_credentials=True, origins=["*"])
     app.config.from_object(config_by_name[config_name])
     db.init_app(app)
     jwt.init_app(app)
     limiter.init_app(app)
-    # CORS(app, resources={r"/*": {"origins": "http://localhost:3000"}}, supports_credentials=True)
+    CORS(app, resources={r"/*": {"origins": "http://localhost:3000"}}, supports_credentials=True)
     with app.app_context():
         db.create_all()
         from .utils import create_admin_user
@@ -29,10 +28,4 @@ def create_app(config_name):
     from .routes import api, assets
     app.register_blueprint(api, url_prefix='/api')
     app.register_blueprint(assets, url_prefix='/assets')
-    
-    # Health Check Route
-    @app.route('/health', methods=['GET'])
-    def health_check():
-        return jsonify({"status": "healthy", "message": "Server is running"}), 200
-
     return app

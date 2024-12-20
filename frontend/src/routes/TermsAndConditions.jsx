@@ -11,7 +11,7 @@ const TermsAndConditions = () => {
         <Container fluid className="p-0 bg-container bg-4">
             <MyNavbar />
             <Container className="text-center mt-5">
-                <h1 className="title-page">TERMS AND CONDITIONS</h1>
+                <h1 className="text-blue-900 fw-900">TERMS AND CONDITIONS</h1>
                 <Row className="justify-content-center">
                     <Col xs={10} md={8} lg={8}>
                         <div className="card-container mt-4 mb-5 p-5 text-start">

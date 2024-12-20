@@ -12,4 +12,6 @@ class Story(db.Model):
     content = db.Column(db.Text, nullable=False)
     customization = db.Column(db.JSON)
     timestamp = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
+    isPublished = db.Column(db.Boolean, default=False, nullable=False)
+    narrationData = db.Column(db.JSON, nullable=True, default=None)
     feedback = db.relationship("Feedback", backref="Story", lazy=True)

@@ -32,23 +32,27 @@ body {
 }
 
 .bg-1 {
-    background-image: url("/bg-1.png");
+    background-image: url("/bg-1.jpg");
 }
 
 .bg-2 {
-    background-image: url("/bg-2.png");
+    background-image: url("/bg-2.jpg");
 }
 
 .bg-3 {
-    background-image: url("/bg-3.png");
+    background-image: url("/bg-3.jpg");
 }
 
 .bg-4 {
-    background-image: url("/bg-4.png");
+    background-image: url("/bg-4.jpg");
 }
 
 .bg-5 {
-    background-image: url("/bg-5.png");
+    background-image: url("/bg-5.jpg");
+}
+
+.bg-6 {
+    background-image: url("/bg-6.jpg");
 }
 
 .text-justify {
@@ -63,19 +67,24 @@ body {
     color: #00A57D;
 }
 
+.my-color-2 {
+    color: #414141;
+}
+
 .my-bg {
     background: #00A57D;
 }
 
-// .accordion-button {
-//     display: block !important;
-// }
+.my-bg-2 {
+    background: #CCF6FF;
+}
 
-.rhap_container {
-    padding: 0 !important;
-    margin: 0 !important;
-    margin-bottom: 10px !important;
-    box-shadow: none !important;
+.fw-900 {
+    font-weight: 900;
+}
+
+.w-32px {
+    width: 32px;
 }
 
 $font-family-san-serif: "Nunito Sans", sans-serif;

@@ -12,7 +12,7 @@ const FAQ = () => {
         <Container fluid className="p-0 bg-container bg-4">
             <MyNavbar />
             <Container className="text-center mt-5">
-                <h1 className="title-page">FAQ</h1>
+                <h1 className="text-blue-900 fw-900">FAQ</h1>
                 <Row className="justify-content-center">
                     <Col xs={12} md={8} lg={8}>
                         <div className="card-container mt-4 mb-5 p-5 text-justify">
