@@ -5,4 +5,4 @@
 
 mkdir -p /app/assets
 
-exec flask run --host=0.0.0.0 --port=5000
+exec gunicorn -b 0.0.0.0:5000 -w 4 server:app

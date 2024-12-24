@@ -7,9 +7,8 @@ from app.src import create_app, db
 from app.src.models.user_model import User
 from app.src.models.feedback_model import Feedback
 from app.src.models.story_model import Story
-from dotenv import load_dotenv
 from datetime import datetime, timedelta
-load_dotenv()
+
 app = create_app(os.getenv('BOILERPLATE_ENV', 'dev'))
 app.app_context().push()
 migrate = Migrate(app, db)

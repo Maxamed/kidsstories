@@ -1,0 +1,63 @@
+services:
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: /run/secrets/db_password
+      POSTGRES_DB: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    secrets:
+      - db_password
+    networks:
+      - kids-stories-network
+
+  memcached:
+    image: memcached:alpine
+    ports:
+      - "11211:11211"
+    networks:
+      - kids-stories-network
+
+  kids-stories-backend:
+    build: 
+      context: ./backend/
+      dockerfile: Dockerfile.prod
+    ports:
+      - "5000:5000"
+    env_file: backend/.env
+    volumes:
+      - backend_assets:/app/assets
+      - backend_migrations:/app/migrations
+    depends_on:
+      - db
+      - memcached
+    networks:
+      - kids-stories-network
+
+  kids-stories-frontend:
+    build:
+      context: ./frontend/
+      dockerfile: Dockerfile.prod
+    ports:
+      - "80:80"
+    env_file: frontend/.env
+    depends_on:
+      - kids-stories-backend
+    networks:
+      - kids-stories-network
+
+volumes:
+  db_data:
+  backend_assets:
+  backend_migrations:
+
+networks:
+  kids-stories-network:
+    driver: bridge
+
+secrets:
+  db_password:
+    file: ./secrets/db_password
