@@ -36,6 +36,11 @@ const ContactUs = () => {
         try {
             const response = await axios.post(`${API_BASE_URL}/contact/submit`, contactData, { withCredentials: true });
             setResponseMessage(response.data.message);
+            setContactData({
+                name: "",
+                email: "",
+                message: "",
+            });
         } catch (error) {
             setErrorMessage(error.response.data.message);
         }

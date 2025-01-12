@@ -37,10 +37,26 @@ def register():
         db.session.add(new_user)
         db.session.commit()
 
-        return Response(response=json.dumps({
+        claims = {
+            "name": new_user.name,
+            "email": new_user.email,
+            "role": new_user.role
+        }
+        access_token = create_access_token(identity=str(new_user.id), additional_claims=claims)
+
+        response = Response(response=json.dumps({
+            "user_data": {
+                "id": new_user.id,
+                "name": new_user.name,
+                "email": new_user.email,
+                "role": new_user.role
+            },
             "message": "User registered successfully",
             "status": "success"
         }), status=201, mimetype="application/json")
+
+        set_access_cookies(response, access_token)
+        return response
 
     except Exception as e:
         return Response(response=json.dumps({
@@ -116,37 +132,6 @@ def logout():
 
         unset_jwt_cookies(response)
         return response
-
-    except Exception as e:
-        return Response(response=json.dumps({
-            "message": f"An error occurred: {str(e)}",
-            "status": "fail"
-        }), status=500, mimetype="application/json")
-
-@user.route("/profile", methods=["GET"])
-@jwt_required()
-def profile():
-    try:
-        current_user = get_jwt()
-        user_id = current_user["sub"]
-
-        fetch_user = User.query.filter_by(id=user_id).first()
-        if not fetch_user:
-            return Response(response=json.dumps({
-                "message": "User not found",
-                "status": "fail"
-            }), status=404, mimetype="application/json")
-
-        return Response(response=json.dumps({
-            "user_data": {
-                "id": fetch_user.id,
-                "name": fetch_user.name,
-                "email": fetch_user.email,
-                "role": fetch_user.role
-            },
-            "message": "User profile retrieved successfully",
-            "status": "success"
-        }), status=200, mimetype="application/json")
 
     except Exception as e:
         return Response(response=json.dumps({
@@ -263,11 +248,156 @@ def google_register():
         new_user = User(email=email, name=name, google_id=google_id)
         db.session.add(new_user)
         db.session.commit()
-        
-        return Response(response=json.dumps({
+
+        claims = {
+            "name": new_user.name,
+            "email": new_user.email,
+            "role": new_user.role
+        }
+        access_token = create_access_token(identity=str(new_user.id), additional_claims=claims)
+
+        response = Response(response=json.dumps({
+            "user_data": {
+                "id": new_user.id,
+                "name": new_user.name,
+                "email": new_user.email,
+                "role": new_user.role
+            },
             "message": "User registered successfully",
             "status": "success"
         }), status=201, mimetype="application/json")
+
+        set_access_cookies(response, access_token)
+        return response
+
+    except Exception as e:
+        return Response(response=json.dumps({
+            "message": f"An error occurred: {str(e)}",
+            "status": "fail"
+        }), status=500, mimetype="application/json")
+
+@user.route("/profile", methods=["GET"])
+@jwt_required()
+def profile():
+    try:
+        current_user = get_jwt()
+        user_id = current_user["sub"]
+
+        fetch_user = User.query.filter_by(id=user_id).first()
+        if not fetch_user:
+            return Response(response=json.dumps({
+                "message": "User not found",
+                "status": "fail"
+            }), status=404, mimetype="application/json")
+
+        claims = {
+            "name": fetch_user.name,
+            "email": fetch_user.email,
+            "role": fetch_user.role
+        }
+        access_token = create_access_token(identity=str(fetch_user.id), additional_claims=claims)
+
+        response = Response(response=json.dumps({
+            "user_data": {
+                "id": fetch_user.id,
+                "name": fetch_user.name,
+                "email": fetch_user.email,
+                "role": fetch_user.role,
+                "account_type": fetch_user.account_type.capitalize() + " account",
+                "timestamp": fetch_user.timestamp
+            },
+            "message": "User profile retrieved successfully",
+            "status": "success"
+        }), status=200, mimetype="application/json")
+
+        set_access_cookies(response, access_token)
+        return response
+
+    except Exception as e:
+        return Response(response=json.dumps({
+            "message": f"An error occurred: {str(e)}",
+            "status": "fail"
+        }), status=500, mimetype="application/json")
+
+@user.route("/update-name", methods=["PUT"])
+@jwt_required()
+def update_name():
+    try:
+        current_user = get_jwt()
+        user_id = current_user["sub"]
+
+        data = request.get_json()
+        name = data.get("name")
+
+        if not name:
+            return Response(response=json.dumps({
+                "message": "Name is missing",
+                "status": "fail"
+            }), status=400, mimetype="application/json")
+
+        fetch_user = User.query.filter_by(id=user_id).first()
+        if not fetch_user:
+            return Response(response=json.dumps({
+                "message": "User not found",
+                "status": "fail"
+            }), status=404, mimetype="application/json")
+
+        fetch_user.name = name
+        db.session.commit()
+
+        return Response(response=json.dumps({
+            "message": "User name updated successfully",
+            "status": "success"
+        }), status=200, mimetype="application/json")
+
+    except Exception as e:
+        return Response(response=json.dumps({
+            "message": f"An error occurred: {str(e)}",
+            "status": "fail"
+        }), status=500, mimetype="application/json")
+
+@user.route("/update-email", methods=["PUT"])
+@jwt_required()
+def update_email():
+    try:
+        current_user = get_jwt()
+        user_id = current_user["sub"]
+
+        data = request.get_json()
+        email = data.get("email")
+
+        if not email:
+            return Response(response=json.dumps({
+                "message": "Email is missing",
+                "status": "fail"
+            }), status=400, mimetype="application/json")
+
+        fetch_user = User.query.filter_by(id=user_id).first()
+        if not fetch_user:
+            return Response(response=json.dumps({
+                "message": "User not found",
+                "status": "fail"
+            }), status=404, mimetype="application/json")
+
+        if User.query.filter_by(email=email).first():
+            return Response(response=json.dumps({
+                "message": "Another account is already using this email",
+                "status": "fail"
+            }), status=400, mimetype="application/json")
+
+        if fetch_user.account_type == "google":
+            return Response(response=json.dumps({
+                "message": "Email cannot be updated for Google accounts",
+                "status": "fail"
+            }), status=400, mimetype="application/json")
+
+        fetch_user.email = email
+        db.session.commit()
+
+        return Response(response=json.dumps({
+            "message": "User email updated successfully",
+            "status": "success"
+        }), status=200, mimetype="application/json")
 
     except Exception as e:
         return Response(response=json.dumps({

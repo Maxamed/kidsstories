@@ -97,7 +97,8 @@ export const AuthProvider = ({ children }) => {
             return;
         }
         try {
-            const response = await axios.post(`${API_BASE_URL}/user/register`, { name, email, password });
+            const response = await axios.post(`${API_BASE_URL}/user/register`, { name, email, password }, { withCredentials: true });
+            setUser(response.data.user_data);
         }
         catch (err) {
             console.error("Registration failed:", err);
@@ -119,6 +120,7 @@ export const AuthProvider = ({ children }) => {
         }
         try {
             const response = await axios.post(`${API_BASE_URL}/user/google-register`, { google_token: googleToken }, { withCredentials: true });
+            setUser(response.data.user_data);
         }
         catch (err) {
             console.error("Google register failed:", err);
@@ -159,6 +161,7 @@ export const AuthProvider = ({ children }) => {
         setAuthError,
         register,
         logout,
+        fetchUser,
     };
 
     return (

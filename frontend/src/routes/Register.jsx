@@ -15,6 +15,8 @@ const Register = () => {
     const { user, register, googleRegister, setAuthError, error, isLoading } = useAuth();
     const [isRegistered, setIsRegistered] = useState(false);
     const [successMessage, setSuccessMessage] = useState(null);
+    const [showPassword1, setShowPassword1] = useState(false);
+    const [showPassword2, setShowPassword2] = useState(false);
     const [formData, setFormData] = useState({
         name: "",
         email: "",
@@ -62,15 +64,15 @@ const Register = () => {
 
     const handleGoogleToken = useGoogleLogin({
         onSuccess: tokenResponse => handleGoogleRegister(tokenResponse),
-        onError: error => setAuthError(error),
+        onError: error => setAuthError(error)
     });
 
     useEffect(() => {
         if (isRegistered && !error) {
             setSuccessMessage("Account registered successfully! Redirecting...");
             setTimeout(() => {
-                navigate("/login");
-                window.location.reload();
+                navigate("/");
+                localStorage.setItem("registered", "true");
             }, 1000);
         }
     }, [isRegistered, error]);
@@ -114,25 +116,37 @@ const Register = () => {
                                         onChange={handleChange}
                                     />
                                 </Form.Group>
-                                <Form.Group controlId="formPassword">
+                                <Form.Group controlId="formPassword" className="position-relative">
                                     <Form.Control
-                                        type="password"
+                                        type={showPassword1 ? "text" : "password"}
                                         placeholder="Password"
                                         className="my-card-input my-3 py-2 px-4"
                                         name="password"
                                         value={formData.password}
                                         onChange={handleChange}
                                     />
+                                    <div
+                                        className="password-toggle"
+                                        onClick={() => setShowPassword1(!showPassword1)}
+                                    >
+                                        {showPassword1 ? <i className="fa-solid fa-eye-slash"></i> : <i className="fa-solid fa-eye"></i>}
+                                    </div>
                                 </Form.Group>
-                                <Form.Group controlId="formConfirmPassword">
+                                <Form.Group controlId="formConfirmPassword" className="position-relative">
                                     <Form.Control
-                                        type="password"
+                                        type={showPassword2 ? "text" : "password"}
                                         placeholder="Confirm Password"
                                         className="my-card-input my-3 py-2 px-4"
                                         name="confirmPassword"
                                         value={formData.confirmPassword}
                                         onChange={handleChange}
                                     />
+                                    <div
+                                        className="password-toggle"
+                                        onClick={() => setShowPassword2(!showPassword2)}
+                                    >
+                                        {showPassword2 ? <i className="fa-solid fa-eye-slash"></i> : <i className="fa-solid fa-eye"></i>}
+                                    </div>
                                 </Form.Group>
                                 <Button
                                     type="submit"

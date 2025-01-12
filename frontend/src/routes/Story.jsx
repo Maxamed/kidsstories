@@ -10,6 +10,7 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 
 import PlayIcon from "../assets/play.svg";
+import DownloadIcon from "../assets/download.svg";
 
 import axios from "axios";
 
@@ -145,15 +146,16 @@ const Story = () => {
                             ) : (
                                 <>
                                     <Row className="my-4 button-bar align-items-center">
-                                        <Col className="d-none d-lg-block" md={1} lg={1}></Col>
-                                        <Col xs={6} md={6} lg={4}>
-                                            <div className="green-button py-1 px-1 px-lg-2" onClick={handleDownloadStory}>
+                                        <Col xs={2} md={2} lg={1}></Col>
+                                        <Col xs={2} md={2} lg={4}>
+                                            <div className="green-button py-1 px-1 px-lg-2 d-none d-lg-block" style={{ cursor: "pointer" }} onClick={handleDownloadStory}>
                                                 {downloadMessage ? downloadMessage : "Download Story"}
                                             </div>
+                                            <img src={DownloadIcon} alt="Download Icon" style={{ cursor: "pointer" }} className="d-lg-none" onClick={handleDownloadStory} />
                                         </Col>
-                                        <Col className="d-none d-lg-block" md={3} lg={3}></Col>
+                                        <Col className="d-none d-lg-block" lg={3}></Col>
                                         <Col xs={2} md={2} lg={1}>
-                                            <img src={PlayIcon} alt="Play Icon" onClick={handleNarrateStory} />
+                                            <img src={PlayIcon} alt="Play Icon" style={{ cursor: "pointer" }} onClick={handleNarrateStory} />
                                         </Col>
                                         <Col xs={2} md={2} lg={1}>
                                             <Share storyId={id} />
@@ -161,7 +163,7 @@ const Story = () => {
                                         <Col xs={2} md={2} lg={1}>
                                             <Feedback storyId={id} />
                                         </Col>
-                                        <Col className="d-none d-lg-block" md={1} lg={1}></Col>
+                                        <Col xs={2} md={2} lg={1}></Col>
                                     </Row>
                                     {narrateMessage && <div className="alert alert-info">{narrateMessage}</div>}
                                     {narrationAudio && (<>
@@ -188,9 +190,9 @@ const Story = () => {
                                                     />
                                                 )}
                                                 <p
-                                                    className="story-preview-content-text"
+                                                    className="story-preview-content-text p-1"
                                                     key={index}
-                                                    style={{ backgroundColor: highlightedParagraph === index ? "#f8d7da" : "transparent" }}
+                                                    style={{ backgroundColor: highlightedParagraph === index ? "#feffad" : "transparent" }}
                                                 >{para}</p>
                                             </React.Fragment>
                                         ))}

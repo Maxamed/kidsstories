@@ -14,6 +14,7 @@ import PageNotFound from "./routes/PageNotFound";
 
 import Login from "./routes/Login";
 import Register from "./routes/Register";
+import Profile from "./routes/Profile";
 
 import MyStories from "./routes/MyStories";
 import GeneratePreview from "./routes/GeneratePreview";
@@ -43,6 +44,7 @@ function App() {
 
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
+            <Route path="/profile" element={<Profile />} />
 
             <Route path="/generate-preview" element={<GeneratePreview />} />
             <Route path="/my-stories" element={<MyStories />} />

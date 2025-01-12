@@ -59,6 +59,9 @@ const MyStories = () => {
                     <Col xs={12} md={12} lg={12}>
                         <div className="card-container mt-4 p-4">
                             {message && <h4 className="my-card-title my-4">{message}</h4>}
+                            {message === "No stories found! Generate one now!" && (
+                                <Link to="/" className="call-to-register-button px-5 py-1">Generate</Link>
+                            )}
                             {storyList.length > 0 && (
                                 <Row className="g-4">
                                     {storyList.map((story, index) => (

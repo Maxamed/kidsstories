@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import MyNavbar from "../components/MyNavbar";
 import { useParams } from "react-router-dom";
 
+import { useAuth } from "../context/AuthContext";
+
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
@@ -9,6 +11,7 @@ import Col from "react-bootstrap/Col";
 import axios from "axios";
 
 const Story = () => {
+    const { user } = useAuth();
     const [storyData, setStoryData] = useState({});
     const [message, setMessage] = useState("Loading story...");
     const { id } = useParams();
@@ -41,7 +44,13 @@ const Story = () => {
                 <Row className="justify-content-center">
                     <Col xs={12} md={8} lg={8}>
                         <div className="card-container mt-4 p-sm-5 p-4 py-5">
-                            <h2 className="my-card-title mb-5">Register now to create your own stories!</h2>
+                            {user ? (<>
+                                <h2 className="my-card-title mb-2">Create your own stories now!</h2>
+                                <a href="/" className="call-to-register-button px-5 py-1 mb-5">Create!</a>
+                            </>) : (<>
+                                <h2 className="my-card-title mb-2">Register now to create your own stories!</h2>
+                                <a href="/register" className="call-to-register-button px-5 py-1 mb-5">Register!</a>
+                            </>)}
 
                             {message ? (
                                 <h4 className="my-card-title my-4">{message}</h4>

@@ -15,8 +15,8 @@ class User(db.Model):
     name = db.Column(db.Text, nullable=False)
     role = db.Column(db.Text, default="user", nullable=False)
     timestamp = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
-    story = db.relationship("Story", backref="User", lazy=True)
-    feedback = db.relationship("Feedback", backref="User", lazy=True)
+    story = db.relationship("Story", backref="User", lazy=True, cascade="all, delete")
+    feedback = db.relationship("Feedback", backref="User", lazy=True, cascade="all, delete")
 
     def __init__(self, email, name, password=None, google_id=None, role="user"):
         self.email = email

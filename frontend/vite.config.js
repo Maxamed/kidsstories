@@ -10,10 +10,5 @@ export default defineConfig({
                 api: 'modern-compiler'
             }
         }
-    },
-    server: {
-        strictPort: true,
-        host: true,
-        port: 3000,
-    },
+    }
 })

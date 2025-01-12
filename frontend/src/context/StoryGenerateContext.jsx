@@ -20,7 +20,9 @@ export const StoryGenerateProvider = ({ children }) => {
         child_name: "",
         child_age: "",
         story_moral: "",
+        story_moral_custom: "",
         story_genre: "",
+        story_genre_custom: "",
         story_length: "short",
     });
     const [isGenerating, setIsGenerating] = useState(false);
@@ -35,6 +37,14 @@ export const StoryGenerateProvider = ({ children }) => {
         }));
     };
 
+    const getFinalStoryData = (data) => ({
+        child_name: data.child_name,
+        child_age: data.child_age,
+        story_moral: data.story_moral === "custom" ? data.story_moral_custom : data.story_moral,
+        story_genre: data.story_genre === "custom" ? data.story_genre_custom : data.story_genre,
+        story_length: data.story_length,
+    });
+
     const generateStory = async (user) => {
         const endpoint = user
             ? `${API_BASE_URL}/story/generate`
@@ -43,15 +53,13 @@ export const StoryGenerateProvider = ({ children }) => {
         setIsGenerating(true);
         setError(null);
         setStoryResponse(null);
-        if (!storyGenerateData.child_name || !storyGenerateData.child_age || !storyGenerateData.story_moral || !storyGenerateData.story_genre) {
+        if (!storyGenerateData.child_name || !storyGenerateData.child_age || !storyGenerateData.story_moral || !storyGenerateData.story_genre || (storyGenerateData.story_moral === "custom" && !storyGenerateData.story_moral_custom) || (storyGenerateData.story_genre === "custom" && !storyGenerateData.story_genre_custom)) {
             setError("All fields are required");
             setIsGenerating(false);
             return;
         }
         try {
-            const response = await axios.post(endpoint, storyGenerateData, {
-                withCredentials: true
-            });
+            const response = await axios.post(endpoint, getFinalStoryData(storyGenerateData), { withCredentials: true });
             const storyObj = {
                 title: response.data.story.title,
                 paragraphs: response.data.story.content.split("\n"),
@@ -62,6 +70,9 @@ export const StoryGenerateProvider = ({ children }) => {
                 storyObj.imageURL = `${ASSETS_BASE_URL}/images/${response.data.story.image}`;
             }
             setStoryResponse(storyObj);
+            if (!user) {
+                localStorage.setItem("storyGenerateData", JSON.stringify(getFinalStoryData(storyGenerateData)));
+            }
         }
         catch (err) {
             console.error("Generate story failed:", err);

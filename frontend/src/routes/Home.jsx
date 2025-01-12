@@ -14,8 +14,9 @@ import Spinner from 'react-bootstrap/Spinner';
 
 const Home = () => {
     const { user } = useAuth();
-    const { isGenerating, error, storyGenerateData, handleStoryGenerateDataChange, generateStory } = useStoryGenerate();
+    const { isGenerating, error, storyGenerateData, handleStoryGenerateDataChange, generateStory, storyResponse } = useStoryGenerate();
     const [isGenerated, setIsGenerated] = useState(false);
+    const [message, setMessage] = useState(null);
     const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
@@ -23,46 +24,51 @@ const Home = () => {
         setIsGenerated(false);
         await generateStory(user);
         setIsGenerated(true);
+        setMessage(null);
     };
 
     useEffect(() => {
-        handleStoryGenerateDataChange({
-            target: {
-                name: "story_length",
-                value: "short",
-            },
+        const initialData = {
+            story_length: "short",
+            story_genre: "",
+            story_moral: "",
+            story_moral_custom: "",
+            child_age: "",
+            child_name: "",
+        };
+
+        Object.entries(initialData).forEach(([name, value]) => {
+            handleStoryGenerateDataChange({
+                target: { name, value },
+            });
         });
-        handleStoryGenerateDataChange({
-            target: {
-                name: "story_genre",
-                value: "",
-            },
-        });
-        handleStoryGenerateDataChange({
-            target: {
-                name: "story_moral",
-                value: "",
-            },
-        });
-        handleStoryGenerateDataChange({
-            target: {
-                name: "child_age",
-                value: "",
-            },
-        });
-        handleStoryGenerateDataChange({
-            target: {
-                name: "child_name",
-                value: "",
-            },
-        });
+
+        const storyGenData = localStorage.getItem("storyGenerateData");
+        const registered = localStorage.getItem("registered");
+        if (storyGenData && registered) {
+            localStorage.removeItem("storyGenerateData");
+            localStorage.removeItem("registered");
+            const data = JSON.parse(storyGenData);
+            Object.entries(data).forEach(([name, value]) => {
+                handleStoryGenerateDataChange({
+                    target: { name, value },
+                });
+            });
+            const submitButton = document.querySelector("button[type='submit']");
+            submitButton.click();
+            setMessage("Your trial story is being converted to a full story. Please wait...");
+        }
     }, []);
 
     useEffect(() => {
-        if (isGenerated && !isGenerating && !error) {
-            navigate("/generate-preview");
+        if (isGenerated && !isGenerating && !error && storyResponse) {
+            if (storyResponse.type === "full") {
+                navigate("/story/" + storyResponse.storyID);
+            } else {
+                navigate("/generate-preview");
+            }
         }
-    }, [isGenerated, isGenerating, error]);
+    }, [isGenerated, isGenerating, error, storyResponse]);
 
     return (
         <Container fluid className="p-0 bg-container bg-2">
@@ -79,12 +85,17 @@ const Home = () => {
                                         {error}
                                     </div>
                                 )}
+                                {message && (
+                                    <div className="alert alert-info" role="alert">
+                                        {message}
+                                    </div>
+                                )}
                                 <Form.Group controlId="formChildName">
                                     <Form.Control
                                         type="text"
                                         placeholder="Enter your child's name"
                                         name="child_name"
-                                        value={storyGenerateData.childName}
+                                        value={storyGenerateData.child_name}
                                         onChange={handleStoryGenerateDataChange}
                                         className="my-card-input my-3 py-2 px-4"
                                     />
@@ -94,29 +105,70 @@ const Home = () => {
                                         type="text"
                                         placeholder="Enter your child's age"
                                         name="child_age"
-                                        value={storyGenerateData.childAge}
+                                        value={storyGenerateData.child_age}
                                         onChange={handleStoryGenerateDataChange}
                                         className="my-card-input my-3 py-2 px-4"
                                     />
                                 </Form.Group>
                                 <Form.Group controlId="formMoralStory">
                                     <Form.Control
-                                        type="text"
-                                        placeholder="Enter the moral of the story"
+                                        as="select"
                                         name="story_moral"
-                                        value={storyGenerateData.storyMoral}
+                                        value={storyGenerateData.story_moral}
                                         onChange={handleStoryGenerateDataChange}
                                         className="my-card-input my-3 py-2 px-4"
+                                    >
+                                        <option value="">Select the moral of the story</option>
+                                        <option value="Courage & Bravery">Courage & Bravery</option>
+                                        <option value="Teamwork & Cooperation">Teamwork & Cooperation</option>
+                                        <option value="Honesty & Integrity">Honesty & Integrity</option>
+                                        <option value="Gratitude & Humility">Gratitude & Humility</option>
+                                        <option value="Perseverance & Determination">Perseverance & Determination</option>
+                                        <option value="Respect for Nature">Respect for Nature</option>
+                                        <option value="Sharing & Generosity">Sharing & Generosity</option>
+                                        <option value="Creativity & Curiosity">Creativity & Curiosity</option>
+                                        <option value="Responsibility & Accountability">Responsibility & Accountability</option>
+                                        <option value="custom">Custom Moral</option>
+                                    </Form.Control>
+                                    <Form.Control
+                                        type="text"
+                                        placeholder="Enter the moral of the story"
+                                        name="story_moral_custom"
+                                        value={storyGenerateData.story_moral_custom}
+                                        onChange={handleStoryGenerateDataChange}
+                                        className="my-card-input my-3 py-2 px-4"
+                                        style={{ display: storyGenerateData.story_moral === "custom" ? "block" : "none" }}
                                     />
                                 </Form.Group>
                                 <Form.Group controlId="formGenreStory">
                                     <Form.Control
-                                        type="text"
-                                        placeholder="Enter the genre of the story"
+                                        as="select"
                                         name="story_genre"
-                                        value={storyGenerateData.storyGenre}
+                                        value={storyGenerateData.story_genre}
                                         onChange={handleStoryGenerateDataChange}
                                         className="my-card-input my-3 py-2 px-4"
+                                    >
+                                        <option value="">Select the genre of the story</option>
+                                        <option value="Fantasy">Fantasy</option>
+                                        <option value="Adventure">Adventure</option>
+                                        <option value="Mystery">Mystery</option>
+                                        <option value="Science Fiction">Science Fiction</option>
+                                        <option value="Fables & Morals">Fables & Morals</option>
+                                        <option value="Humor">Humor</option>
+                                        <option value="Fairy Tales">Fairy Tales</option>
+                                        <option value="Educational">Educational</option>
+                                        <option value="Holiday & Seasonal">Holiday & Seasonal</option>
+                                        <option value="Friendship & Family">Friendship & Family</option>
+                                        <option value="custom">Custom Genre</option>
+                                    </Form.Control>
+                                    <Form.Control
+                                        type="text"
+                                        placeholder="Enter the genre of the story"
+                                        name="story_genre_custom"
+                                        value={storyGenerateData.story_genre_custom}
+                                        onChange={handleStoryGenerateDataChange}
+                                        className="my-card-input my-3 py-2 px-4"
+                                        style={{ display: storyGenerateData.story_genre === "custom" ? "block" : "none" }}
                                     />
                                 </Form.Group>
                                 {user && (
@@ -124,7 +176,7 @@ const Home = () => {
                                         <Form.Control
                                             as="select"
                                             name="story_length"
-                                            value={storyGenerateData.storyLength}
+                                            value={storyGenerateData.story_length}
                                             onChange={handleStoryGenerateDataChange}
                                             className="my-card-input my-3 py-2 px-4"
                                         >

@@ -14,6 +14,7 @@ import Button from "react-bootstrap/Button";
 const Login = () => {
     const { user, login, googleLogin, setAuthError, error, isLoading } = useAuth();
     const [isLogged, setIsLogged] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
     const [successMessage, setSuccessMessage] = useState(null);
     const [formData, setFormData] = useState({
         email: "",
@@ -60,7 +61,7 @@ const Login = () => {
 
     const handleGoogleToken = useGoogleLogin({
         onSuccess: tokenResponse => handleGoogleLogin(tokenResponse),
-        onError: error => setAuthError(error),
+        onError: error => setAuthError(error)
     });
 
 
@@ -68,7 +69,11 @@ const Login = () => {
         if (isLogged && !error) {
             setSuccessMessage("Logged in successfully! Redirecting...");
             setTimeout(() => {
-                navigate("/");
+                if (user.role === "admin") {
+                    navigate("/admin");
+                } else {
+                    navigate("/");
+                }
                 window.location.reload();
             }, 1000);
         }
@@ -103,15 +108,21 @@ const Login = () => {
                                         onChange={handleChange}
                                     />
                                 </Form.Group>
-                                <Form.Group controlId="formPassword">
+                                <Form.Group controlId="formPassword" className="position-relative">
                                     <Form.Control
-                                        type="password"
+                                        type={showPassword ? "text" : "password"}
                                         placeholder="Password"
                                         className="my-card-input my-3 py-2 px-4"
                                         name="password"
                                         value={formData.password}
                                         onChange={handleChange}
                                     />
+                                    <div
+                                        className="password-toggle"
+                                        onClick={() => setShowPassword(!showPassword)}
+                                    >
+                                        {showPassword ? <i className="fa-solid fa-eye-slash"></i> : <i className="fa-solid fa-eye"></i>}
+                                    </div>
                                 </Form.Group>
                                 <div
                                     className="text-start mb-3 font-weight-600"

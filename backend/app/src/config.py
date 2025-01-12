@@ -6,7 +6,7 @@ class Config:
 
     JWT_SECRET_KEY = os.getenv('JWT_SECRET_KEY')
     JWT_TOKEN_LOCATION = ["cookies"]
-    JWT_ACCESS_TOKEN_EXPIRES = timedelta(hours=2)
+    JWT_ACCESS_TOKEN_EXPIRES = timedelta(days=7)
     JWT_COOKIE_SECURE = False
     JWT_CSRF_CHECK_FORM = False
     JWT_COOKIE_CSRF_PROTECT = False

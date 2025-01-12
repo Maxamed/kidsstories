@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
@@ -13,6 +13,7 @@ const Feedback = ({ storyId }) => {
     const [comment, setComment] = useState("");
     const [modalShow, setModalShow] = useState(false);
     const [message, setMessage] = useState("");
+    const [errorMessage, setErrorMessage] = useState("");
     const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
     const handleRatingChange = (newRating) => {
@@ -26,11 +27,11 @@ const Feedback = ({ storyId }) => {
     const handleSubmit = (event) => {
         event.preventDefault();
         if (rating === 0) {
-            setMessage("Please provide a rating.");
+            setErrorMessage("Please provide a rating.");
             return;
         }
         if (comment.trim() === "") {
-            setMessage("Please provide a comment.");
+            setErrorMessage("Please provide a comment.");
             return;
         }
         const feedbackData = {
@@ -42,12 +43,11 @@ const Feedback = ({ storyId }) => {
             axios.post(`${API_BASE_URL}/feedback/submit`, feedbackData, {
                 withCredentials: true
             });
+            setMessage("Feedback submitted successfully.");
         } catch (error) {
             console.error(error);
-            setMessage("Failed to submit feedback.");
+            setErrorMessage("Failed to submit feedback.");
         }
-
-        setModalShow(false);
         setComment("");
         setRating(0);
     };
@@ -56,12 +56,22 @@ const Feedback = ({ storyId }) => {
         setModalShow(false);
         setComment("");
         setMessage("");
+        setErrorMessage("");
         setRating(0);
     }
 
+    useEffect(() => {
+        if (message || errorMessage) {
+            setTimeout(() => {
+                setMessage("");
+                setErrorMessage("");
+            }, 3000);
+        }
+    }, [message, errorMessage]);
+
     return (
         <>
-            <img src={FeedbackIcon} alt="Feedback Icon" onClick={() => setModalShow(true)} />
+            <img src={FeedbackIcon} alt="Feedback Icon" style={{ cursor: "pointer" }} onClick={() => setModalShow(true)} />
             <Modal
                 size="lg"
                 aria-labelledby="contained-modal-title-vcenter"
@@ -74,7 +84,8 @@ const Feedback = ({ storyId }) => {
                     </Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    {message && <p className="alert alert-danger">{message}</p>}
+                    {errorMessage && <p className="alert alert-danger">{errorMessage}</p>}
+                    {message && <p className="alert alert-success">{message}</p>}
                     <Form onSubmit={handleSubmit}>
                         <Form.Group className="mb-3">
                             <Form.Label>Rating:&nbsp;&nbsp;</Form.Label>
